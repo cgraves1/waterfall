@@ -1,5 +1,5 @@
 //modified by: Cody Graves
-//date: 5/31/17
+//date: 6/3/17
 //purpose: Add various functions to graphics application
 //
 //cs3350 Spring 2017 Lab-1
