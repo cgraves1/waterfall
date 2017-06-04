@@ -1,5 +1,5 @@
 //modified by: Cody Graves
-//date: 6/3/17
+//date: 6/4/17
 //purpose: Add various functions to graphics application
 //
 //cs3350 Spring 2017 Lab-1
@@ -44,7 +44,7 @@
 #define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 600
 
-#define MAX_PARTICLES 5000
+#define MAX_PARTICLES 20000
 #define GRAVITY .1
 #define RIGHT_PULL .7
 #define rnd() (float)rand() / (float)RAND_MAX
@@ -73,6 +73,7 @@ struct Particle {
 
 class Game {
     public:
+	bool bubbler;
 	Shape box[5];
 	Shape circle;
 	Particle particle[MAX_PARTICLES];
@@ -80,6 +81,7 @@ class Game {
 	Game()
 	{
 	    n = 0;
+		bubbler = false;
 	}
 };
 
@@ -94,7 +96,7 @@ void movement(Game *game);
 void render(Game *game);
 void defineBox(Shape*, float, float, float, float);//defines box. width, height, cenX, cenY
 void defineCircle(Shape*, float, float, float); //defines cirlce. radius, cenX, cenY
-
+void checkBubbler(Game *game);
 
 int main(void)
 {
@@ -105,6 +107,7 @@ int main(void)
 	//declare game object
 	Game game;
 	game.n=0;
+	game.bubbler = false;
 
 	//declare 5 box shapes and circle	
 	defineBox(&game.box[0], 100, 20, -200+5*65, 800-5*65);
@@ -121,6 +124,7 @@ int main(void)
 			check_mouse(&e, &game);
 			done = check_keys(&e, &game);
 		}
+		checkBubbler(&game);
 		movement(&game);
 		render(&game);
 		glXSwapBuffers(dpy, win);
@@ -128,6 +132,7 @@ int main(void)
 	cleanupXWindows();
 	return 0;
 }
+
 
 void defineBox(Shape *tmpBox, float w, float h, float cenX, float cenY)
 {
@@ -227,12 +232,12 @@ void check_mouse(XEvent *e, Game *game)
 	if (e->type == ButtonPress) {
 		if (e->xbutton.button==1) {
 			//Left button was pressed
-			int y = WINDOW_HEIGHT - e->xbutton.y;
+			/*int y = WINDOW_HEIGHT - e->xbutton.y;
 			makeParticle(game, e->xbutton.x, y);
 			makeParticle(game, e->xbutton.x, y);
 			makeParticle(game, e->xbutton.x, y);
 			makeParticle(game, e->xbutton.x, y);
-			makeParticle(game, e->xbutton.x, y);
+			makeParticle(game, e->xbutton.x, y);*/
 			return;
 		}
 		if (e->xbutton.button==3) {
@@ -246,9 +251,9 @@ void check_mouse(XEvent *e, Game *game)
 		savey = e->xbutton.y;
 		if (++n < 10)
 			return;
-		int y = WINDOW_HEIGHT - e->xbutton.y;
+		/*int y = WINDOW_HEIGHT - e->xbutton.y;
 		for(int i = 0; i < 10; i ++)
-			makeParticle(game, e->xbutton.x, y);
+			makeParticle(game, e->xbutton.x, y);*/
 	}
 }
 
@@ -261,11 +266,19 @@ int check_keys(XEvent *e, Game *game)
 			return 1;
 		}
 		//You may check other keys here.
-
-
-
+		if (key == XK_B || key == XK_b)
+		{
+			game->bubbler = !game->bubbler;
+		}
 	}
 	return 0;
+}
+
+void checkBubbler(Game *game)
+{
+	if(game->bubbler)
+		for(int i = 0; i < 10; i++)
+			makeParticle(game, 130, 570);
 }
 
 void movement(Game *game)
@@ -297,8 +310,8 @@ void movement(Game *game)
 				&& p->s.center.x < s[j]->center.x + s[j]->width)
 			{
 		    	p->s.center.y = s[j]->center.y + s[j]->height + 3;
-	    		p->velocity.y = -p->velocity.y/2;
-				p->velocity.x = RIGHT_PULL;//need to replace this with random bouncing, but have constant pull right
+	    		p->velocity.y = -p->velocity.y/2 + rnd();
+				p->velocity.x = RIGHT_PULL + rnd();
 				p->velocity.y *= 0.5;
 			}
 		}
@@ -316,7 +329,8 @@ void movement(Game *game)
 
 void render(Game *game)
 {
-	float w, h, r;
+	float w, h;
+	//float r;
 	glClear(GL_COLOR_BUFFER_BIT);
 	//Draw shapes...
 
@@ -342,7 +356,7 @@ void render(Game *game)
 	}
 
 	//draw circle WIP!!!
-	Shape *c;
+	/*Shape *c;
 	glColor3ub(90,140,90);
 	c = &game->circle;
 	glPushMatrix();
@@ -357,7 +371,7 @@ void render(Game *game)
 		glVertex2f(cos(degInRad)*r,sin(degInRad)*r);
 	}
 	glEnd();
-	glPopMatrix();
+	glPopMatrix();*/
 
 
 	//draw all particles here
