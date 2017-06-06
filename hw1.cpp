@@ -40,13 +40,12 @@
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <GL/glx.h>
-
 #define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 600
 
 #define MAX_PARTICLES 20000
 #define GRAVITY .1
-#define RIGHT_PULL .7
+#define PULL .6
 #define rnd() (float)rand() / (float)RAND_MAX
 
 //X Windows variables
@@ -81,7 +80,7 @@ class Game {
 	Game()
 	{
 	    n = 0;
-		bubbler = false;
+	    bubbler = false;
 	}
 };
 
@@ -91,8 +90,7 @@ void init_opengl(void);
 void cleanupXWindows(void);
 void check_mouse(XEvent *e, Game *game);
 int check_keys(XEvent *e, Game *game);
-//void movement(Game *game);
-void movement(Game *game);
+extern void movement(Game *game);
 void render(Game *game);
 void defineBox(Shape*, float, float, float, float);//defines box. width, height, cenX, cenY
 void defineCircle(Shape*, float, float, float); //defines cirlce. radius, cenX, cenY
@@ -115,7 +113,7 @@ int main(void)
 	defineBox(&game.box[2], 100, 20, 000+5*65, 640-5*65);
 	defineBox(&game.box[3], 100, 20, 100+5*65, 560-5*65);
 	defineBox(&game.box[4], 100, 20, 200+5*65, 480-5*65);
-	//defineCircle(&game.circle, 100, 000+5*65, 700-5*65);
+	defineCircle(&game.circle, 200, 475+5*65, 300-5*65);
 	//start animation
 	while (!done) {
 		while (XPending(dpy)) {
@@ -281,6 +279,7 @@ void checkBubbler(Game *game)
 			makeParticle(game, 130, 570);
 }
 
+/*
 void movement(Game *game)
 {
 	Particle *p;
@@ -310,9 +309,9 @@ void movement(Game *game)
 				&& p->s.center.x < s[j]->center.x + s[j]->width)
 			{
 		    	p->s.center.y = s[j]->center.y + s[j]->height + 3;
-	    		p->velocity.y = -p->velocity.y/2 + rnd();
-				p->velocity.x = RIGHT_PULL + rnd();
-				p->velocity.y *= 0.5;
+	    		p->velocity.y = -p->velocity.y/2 + rnd() * 1.0 - 0.5;
+			p->velocity.x = PULL + rnd();
+			p->velocity.y *= 0.5;
 			}
 		}
 
@@ -325,12 +324,12 @@ void movement(Game *game)
 			game->n = game->n - 1;
 		}
 	}
-}
+}*/
 
 void render(Game *game)
 {
 	float w, h;
-	//float r;
+	float r;
 	glClear(GL_COLOR_BUFFER_BIT);
 	//Draw shapes...
 
@@ -356,22 +355,20 @@ void render(Game *game)
 	}
 
 	//draw circle WIP!!!
-	/*Shape *c;
+	Shape *c;
 	glColor3ub(90,140,90);
 	c = &game->circle;
 	glPushMatrix();
-	glTranslatef(c->center.x, c->center.y, c->center.x);
-	//w = c->width;
-	//h = c->height;
+	glTranslatef(c->center.x, c->center.y, c->center.z);
 	r = c->radius;
-	glBegin(GL_LINE_LOOP);
+	glBegin(GL_POLYGON);
 	for(int i = 0; i < 360; i++)
 	{
 		float degInRad = i*3.14159/180;
 		glVertex2f(cos(degInRad)*r,sin(degInRad)*r);
 	}
 	glEnd();
-	glPopMatrix();*/
+	glPopMatrix();
 
 
 	//draw all particles here
