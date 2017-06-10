@@ -1,5 +1,5 @@
 //modified by: Cody Graves
-//date: 6/4/17
+//date: 6/10/17
 //purpose: Add various functions to graphics application
 //
 //cs3350 Spring 2017 Lab-1
@@ -40,6 +40,7 @@
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <GL/glx.h>
+#include "fonts.h"
 #define WINDOW_WIDTH  800
 #define WINDOW_HEIGHT 600
 
@@ -201,6 +202,10 @@ void init_opengl(void)
 	glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, -1, 1);
 	//Set the screen background color
 	glClearColor(0.1, 0.1, 0.1, 1.0);
+	//Enable fonts
+	glEnable(GL_TEXTURE_2D);
+	initialize_fonts();
+
 }
 
 
@@ -328,8 +333,9 @@ void movement(Game *game)
 
 void render(Game *game)
 {
-	float w, h;
-	float r;
+	float w, h, r;
+	char phase[5][20] = {"REQUIREMENTS","DESIGN","CODING","TESTING","RELEASE"};
+
 	glClear(GL_COLOR_BUFFER_BIT);
 	//Draw shapes...
 
@@ -370,6 +376,21 @@ void render(Game *game)
 	glEnd();
 	glPopMatrix();
 
+
+	//render text
+	Rect rec;
+	glColor3ub(255,255,255);
+	for(int i=0; i < 5; i++)
+	{
+		int modifier = 20;
+		if(i > 0)
+			modifier = 60;
+		rec.bot = s[i]->center.y-10;
+		rec.left = s[i]->center.x - s[i]->width + modifier;
+		rec.center=0;
+		unsigned int colorCode = 0x00ffffff;
+		ggprint16(&rec, 16, colorCode, phase[i]);
+	}
 
 	//draw all particles here
 	glPushMatrix();

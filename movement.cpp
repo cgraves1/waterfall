@@ -50,7 +50,7 @@ class Game {
 void movement(Game *game){
 	Particle *p;
 	Shape *s[5]; 
-	Shape *c = &game->circle;
+	//Shape *c = &game->circle;
 
 	if (game->n <= 0)
 		return;
@@ -81,6 +81,7 @@ void movement(Game *game){
 			p->velocity.y *= 0.5;
 			}
 		}
+		/*
 		//check for collision with circle WIP!!!
 		float d0 = p->s.center.x - c->center.x;
 		float d1 = p->s.center.y - c->center.y;
@@ -90,7 +91,7 @@ void movement(Game *game){
 		    p->s.center.x -= p->velocity.x;
 		    p->s.center.y =  c->center.y + distance;
 		    //p->velocity.x = -.3;
-		}
+		}*/
 		//check for off-screen
 		if (p->s.center.y < 0.0 || p->s.center.y > WINDOW_HEIGHT || p->s.center.x < 0.0 || p->s.center.x > WINDOW_WIDTH) 
 		{
