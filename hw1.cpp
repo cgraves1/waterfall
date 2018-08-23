@@ -1,6 +1,6 @@
 //modified by: Cody Graves
 //date: 6/10/17
-//purpose: Add various functions to graphics application
+//purpose: Add various functions to graphics applications
 //
 //cs3350 Spring 2017 Lab-1
 //author: Gordon Griesel
